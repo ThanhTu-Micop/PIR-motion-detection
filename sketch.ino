@@ -1,6 +1,6 @@
 #define BLYNK_TEMPLATE_ID "TMPL6AK6T1Q8h"
 #define BLYNK_TEMPLATE_NAME "niceh"
-#define BLYNK_AUTH_TOKEN "6UK7k2qsgY4aqscDmonCFg13GlEdvsgJ"
+#define BLYNK_AUTH_TOKEN "???????????????????"
 #define BLYNK_PRINT Serial
 
 #include <WiFi.h>
@@ -22,7 +22,7 @@ char pass[] = "";
 
 // ========== THINGSPEAK ==========
 // Copy Write API Key của ThingSpeak Channel vào đây
-String THINGSPEAK_API_KEY = "Z7PJ42ZYYVI5N0IF";
+String THINGSPEAK_API_KEY = "??????????????????";
 const char* THINGSPEAK_SERVER = "http://api.thingspeak.com/update";
 
 // Channel fields:
