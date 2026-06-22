@@ -298,19 +298,7 @@ Through this project, users can learn:
 
 [https://wokwi.com](https://wokwi.com)
 
----
 
-## Author
-
-**Thanh Tu**
-
-GitHub:
-[https://github.com/ThanhTu-Micop](https://github.com/ThanhTu-Micop)
-
-Project:
-[https://github.com/ThanhTu-Micop/PIR-motion-detection](https://github.com/ThanhTu-Micop/PIR-motion-detection)
-
----
 
 ## License
 
