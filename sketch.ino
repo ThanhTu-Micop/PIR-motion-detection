@@ -33,42 +33,42 @@ const unsigned long THINGSPEAK_INTERVAL = 15000;
 unsigned long lastThingSpeakSend = 0;
 
 // ========== THỜI GIAN ==========
-const char* ntpServer          = "pool.ntp.org";
-const long  gmtOffset_sec      = 7 * 3600;
-const int   daylightOffset_sec = 0;
+const char* ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = 7 * 3600;
+const int daylightOffset_sec = 0;
 
 // ========== BIẾN TRẠNG THÁI ==========
-bool          armed            = true;
-bool          lastMotionState  = false;
-unsigned long lastMotionTime   = 0;
-unsigned long lastButtonPress  = 0;
-bool          lastButtonState  = HIGH;
-int           detectionCount   = 0;
+bool armed = true;
+bool lastMotionState = false;
+unsigned long lastMotionTime = 0;
+unsigned long lastButtonPress = 0;
+bool lastButtonState = HIGH;
+int detectionCount = 0;
 
 // ========== THAM SỐ ==========
-const unsigned long MOTION_COOLDOWN = 3000;
+const unsigned long MOTION_COOLDOWN = 10000;
 const unsigned long BUTTON_DEBOUNCE = 300;
-const unsigned long ALARM_DURATION  = 2000;
+const unsigned long ALARM_DURATION = 2000;
 
-BlynkTimer    timer;
+BlynkTimer timer;
 unsigned long alarmStartTime = 0;
-bool          alarmActive    = false;
+bool alarmActive = false;
 
 // ========== HÀNG ĐỢI GỬI THINGSPEAK ==========
 // Lưu tạm khi mất WiFi hoặc chưa đủ 15 giây
 struct LogEntry {
-  int    count;
+  int count;
   String timestamp;
   String date;
-  int    hour;
-  int    minute;
+  int hour;
+  int minute;
 };
 
 const int QUEUE_SIZE = 20;
-LogEntry  logQueue[QUEUE_SIZE];
-int       queueHead = 0;
-int       queueTail = 0;
-int       queueLen  = 0;
+LogEntry logQueue[QUEUE_SIZE];
+int queueHead = 0;
+int queueTail = 0;
+int queueLen = 0;
 
 void enqueue(LogEntry e) {
   if (queueLen >= QUEUE_SIZE) {
@@ -86,7 +86,7 @@ void enqueue(LogEntry e) {
   queueLen++;
 }
 
-bool dequeue(LogEntry &e) {
+bool dequeue(LogEntry& e) {
   if (queueLen <= 0) return false;
 
   e = logQueue[queueHead];
@@ -113,18 +113,18 @@ MyTimeInfo getTimeInfo() {
 
   if (!getLocalTime(&t)) {
     unsigned long s = millis() / 1000;
-    ti.hour   = (s / 3600) % 24;
+    ti.hour = (s / 3600) % 24;
     ti.minute = (s / 60) % 60;
 
     char buf[30];
     sprintf(buf, "%02d:%02d:%02d --/--/----", ti.hour, ti.minute, (int)(s % 60));
 
     ti.timestamp = String(buf);
-    ti.date      = "--/--/----";
+    ti.date = "--/--/----";
     return ti;
   }
 
-  ti.hour   = t.tm_hour;
+  ti.hour = t.tm_hour;
   ti.minute = t.tm_min;
 
   char ts[25], dt[12];
@@ -132,7 +132,7 @@ MyTimeInfo getTimeInfo() {
   strftime(dt, sizeof(dt), "%d/%m/%Y", &t);
 
   ti.timestamp = String(ts);
-  ti.date      = String(dt);
+  ti.date = String(dt);
   return ti;
 }
 
@@ -142,10 +142,10 @@ MyTimeInfo getTimeInfo() {
 void syncBlynkStatus() {
   if (!Blynk.connected()) return;
 
-  Blynk.virtualWrite(V0, alarmActive ? 1 : 0);                // Alarm LED/status
-  Blynk.virtualWrite(V1, getTimeInfo().timestamp);            // Latest time
-  Blynk.virtualWrite(V2, armed ? 1 : 0);                      // Armed switch
-  Blynk.virtualWrite(V3, detectionCount);                     // Counter
+  Blynk.virtualWrite(V0, alarmActive ? 1 : 0);      // Alarm LED/status
+  Blynk.virtualWrite(V1, getTimeInfo().timestamp);  // Latest time
+  Blynk.virtualWrite(V2, armed ? 1 : 0);            // Armed switch
+  Blynk.virtualWrite(V3, detectionCount);           // Counter
 }
 
 // ─────────────────────────────────────────────
@@ -171,11 +171,7 @@ bool sendToThingSpeak(const LogEntry& e) {
 
   HTTPClient http;
 
-  String url = String(THINGSPEAK_SERVER) +
-               "?api_key=" + THINGSPEAK_API_KEY +
-               "&field1=" + String(e.count) +
-               "&field2=" + String(e.hour) +
-               "&field3=" + String(e.minute);
+  String url = String(THINGSPEAK_SERVER) + "?api_key=" + THINGSPEAK_API_KEY + "&field1=" + String(e.count) + "&field2=" + String(e.hour) + "&field3=" + String(e.minute);
 
   http.begin(url);
   int code = http.GET();
@@ -186,9 +182,7 @@ bool sendToThingSpeak(const LogEntry& e) {
     String response = http.getString();
 
     if (response.toInt() > 0) {
-      Serial.println("✅ ThingSpeak OK: #" + String(e.count) +
-                     " | hour=" + String(e.hour) +
-                     " | minute=" + String(e.minute));
+      Serial.println("✅ ThingSpeak OK: #" + String(e.count) + " | hour=" + String(e.hour) + " | minute=" + String(e.minute));
     } else {
       Serial.println("⚠️ ThingSpeak trả về 0: gửi quá nhanh hoặc key/channel sai");
       ok = false;
@@ -264,8 +258,10 @@ void checkButton() {
 
     // Nháy LED báo đã bấm nút
     for (int i = 0; i < 3; i++) {
-      digitalWrite(LED, HIGH); delay(80);
-      digitalWrite(LED, LOW);  delay(80);
+      digitalWrite(LED, HIGH);
+      delay(80);
+      digitalWrite(LED, LOW);
+      delay(80);
     }
 
     lastButtonPress = now;
@@ -291,8 +287,8 @@ void checkMotion() {
   bool motion = digitalRead(PIR);
   unsigned long now = millis();
 
-  if (motion && !lastMotionState && now - lastMotionTime > MOTION_COOLDOWN) {
-    alarmActive    = true;
+  if (motion && now - lastMotionTime > MOTION_COOLDOWN) {
+    alarmActive = true;
     alarmStartTime = now;
 
     digitalWrite(BUZZER, HIGH);
@@ -324,19 +320,16 @@ void checkMotion() {
   }
 
   // Tắt còi sau ALARM_DURATION
+// Tắt LED + Buzzer sau ALARM_DURATION
   if (alarmActive && now - alarmStartTime > ALARM_DURATION) {
-    digitalWrite(BUZZER, LOW);
+  digitalWrite(BUZZER, LOW);
+  digitalWrite(LED, LOW);
 
-    if (!motion) {
-      digitalWrite(LED, LOW);
-      alarmActive = false;
-      syncBlynkStatus();
-    }
+  alarmActive = false;
+  syncBlynkStatus();
   }
 
-  lastMotionState = motion;
-}
-
+  }
 // ─────────────────────────────────────────────
 // BLYNK CALLBACKS
 // ─────────────────────────────────────────────
@@ -436,15 +429,17 @@ void setup() {
   Serial.println("⏰ NTP đồng bộ xong");
 
   // Timer
-  timer.setInterval(100L,   checkButton);
-  timer.setInterval(150L,   checkMotion);
+  timer.setInterval(100L, checkButton);
+  timer.setInterval(150L, checkMotion);
   timer.setInterval(15000L, checkConnection);
   timer.setInterval(15000L, flushQueue);
 
   // Feedback LED
   for (int i = 0; i < 5; i++) {
-    digitalWrite(LED, HIGH); delay(100);
-    digitalWrite(LED, LOW);  delay(100);
+    digitalWrite(LED, HIGH);
+    delay(100);
+    digitalWrite(LED, LOW);
+    delay(100);
   }
 
   Serial.println("\n✅ SẴN SÀNG!");
