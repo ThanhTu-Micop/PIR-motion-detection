@@ -6,9 +6,6 @@
 2. **Min Thet Khaing** – 104240090
 3. **Trinh Viet Long** – 104240033
 
-Faculty of Computer Science and Engineering (CSE)
-
-University Dormitory Traffic Activity Monitoring Project using ESP32, PIR Sensor, and ThingSpeak.
 
 
 ## Overview
