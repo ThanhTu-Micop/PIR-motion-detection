@@ -1,4 +1,3 @@
-Dưới đây là một **README.md chi tiết** cho project của bạn, tích hợp GitHub, Wokwi và ThingSpeak.
 
 ````markdown
 # PIR Motion Detection System with ESP32 & ThingSpeak
