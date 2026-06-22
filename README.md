@@ -1,5 +1,16 @@
 # PIR-Based Traffic Activity Monitoring System using ESP32 and ThingSpeak
 
+## Contributors
+
+1. **Dang Thanh Tu** – 104240761
+2. **Min Thet Khaing** – 104240090
+3. **Trinh Viet Long** – 104240033
+
+Faculty of Computer Science and Engineering (CSE)
+
+University Dormitory Traffic Activity Monitoring Project using ESP32, PIR Sensor, and ThingSpeak.
+
+
 ## Overview
 
 This project presents an IoT-based traffic activity monitoring system developed using an ESP32 microcontroller, a PIR (Passive Infrared) motion sensor, and the ThingSpeak cloud platform.
